@@ -1,3 +1,21 @@
+const pageLoader = document.getElementById("pageLoader");
+
+if (pageLoader) {
+    const hideLoader = () => {
+        requestAnimationFrame(() => {
+            pageLoader.classList.add("is-hidden");
+        });
+    };
+
+    if (document.readyState === "complete") {
+        setTimeout(hideLoader, 450);
+    } else {
+        window.addEventListener("load", () => {
+            setTimeout(hideLoader, 450);
+        }, { once: true });
+    }
+}
+
 // ==========================================
 // HERO SECTION
 // ==========================================
@@ -309,7 +327,7 @@ if (currentYear) {
 const menuButton = document.getElementById("menuButton");
 const mobileMenu = document.getElementById("mobileMenu");
 const menuIcon = document.getElementById("menuIcon");
-const navbar = document.querySelector("header");
+const navbar = document.getElementById("siteHeader");
 
 const mobileLinks = document.querySelectorAll(".mobile-link");
 const navLinks = document.querySelectorAll(".nav-link");
