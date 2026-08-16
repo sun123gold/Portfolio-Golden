@@ -1,4 +1,6 @@
 const pageLoader = document.getElementById("pageLoader");
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
 
 if (pageLoader) {
     const hideLoader = () => {
@@ -67,7 +69,7 @@ const heroVisual = document.querySelector(".hero-visual");
 const heroVisualCard = document.querySelector(".hero-visual-card");
 const heroFloatingCards = document.querySelectorAll(".hero-floating-card");
 
-if (heroVisual && heroVisualCard) {
+if (heroVisual && heroVisualCard && !isTouchDevice && !prefersReducedMotion) {
     heroVisual.addEventListener("pointermove", (event) => {
         const bounds = heroVisual.getBoundingClientRect();
         const x = (event.clientX - bounds.left) / bounds.width;
@@ -140,7 +142,7 @@ if (aboutText.length || aboutFocusCard) {
         aboutObserver.observe(element);
     });
 
-    if (aboutFocusCard) {
+    if (aboutFocusCard && !isTouchDevice && !prefersReducedMotion) {
         aboutFocusCard.classList.add("about-reveal");
         aboutObserver.observe(aboutFocusCard);
 
@@ -204,23 +206,25 @@ const interactiveCards = document.querySelectorAll(
     "#skills .rounded-3xl, #services article, #projects article, #contact .rounded-3xl"
 );
 
-interactiveCards.forEach((card) => {
-    card.addEventListener("pointermove", (event) => {
-        const bounds = card.getBoundingClientRect();
-        const x = (event.clientX - bounds.left) / bounds.width;
-        const y = (event.clientY - bounds.top) / bounds.height;
+if (!isTouchDevice && !prefersReducedMotion) {
+    interactiveCards.forEach((card) => {
+        card.addEventListener("pointermove", (event) => {
+            const bounds = card.getBoundingClientRect();
+            const x = (event.clientX - bounds.left) / bounds.width;
+            const y = (event.clientY - bounds.top) / bounds.height;
 
-        const rotateY = (x - 0.5) * 10;
-        const rotateX = (0.5 - y) * 10;
+            const rotateY = (x - 0.5) * 10;
+            const rotateX = (0.5 - y) * 10;
 
-        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px)`;
-        card.style.transition = "transform 0.2s ease-out";
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px)`;
+            card.style.transition = "transform 0.2s ease-out";
+        });
+
+        card.addEventListener("pointerleave", () => {
+            card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)";
+        });
     });
-
-    card.addEventListener("pointerleave", () => {
-        card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)";
-    });
-});
+}
 
 const projectProgress = document.querySelector("#projects .h-full");
 
